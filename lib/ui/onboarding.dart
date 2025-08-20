@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:myapp/ui/login.dart';
+import 'package:myapp/ui/widgets/akili_btn.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});
@@ -25,7 +28,7 @@ class Onboarding extends StatelessWidget {
                 ),
               ),
             ),
-            //Tex section
+            //Text section
             Column(
               children: [
                 Text(
@@ -44,25 +47,12 @@ class Onboarding extends StatelessWidget {
                 ),
               ],
             ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.75,
-              height: 45,
-              decoration: BoxDecoration(
-                color: Color.fromRGBO(253, 94, 0, 1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-
-              child: TextButton(
-                onPressed: () {},
-                child: Text(
-                  "Get Started",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+            //Button section
+            AkiliButton(
+              text: "Get Started",
+              onPressed: () {
+                Get.to(() => Login());
+              },
             ),
           ],
         ),
