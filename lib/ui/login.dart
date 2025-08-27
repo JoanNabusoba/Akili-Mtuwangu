@@ -5,6 +5,7 @@ import 'package:myapp/ui/dashboard.dart';
 import 'package:myapp/ui/signup.dart';
 import 'package:myapp/ui/widgets/akili_btn.dart';
 import 'package:myapp/ui/widgets/akili_textfield.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -64,7 +65,7 @@ class _LoginState extends State<Login> {
                         ),
                         const SizedBox(height: 20),
                         AkiliTextfield(
-                          name: "Email",
+                          name: "email",
                           hintText: "Enter email",
                           prefixIcon: Icons.person,
                           labelText: "Email",
@@ -72,7 +73,7 @@ class _LoginState extends State<Login> {
                         ),
                         const SizedBox(height: 10),
                         AkiliTextfield(
-                          name: "Password",
+                          name: "password",
                           hintText: "Enter password",
                           prefixIcon: Icons.lock,
                           labelText: "Password",
@@ -114,8 +115,38 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           child: TextButton(
-                            onPressed: () {
-                              Get.to(() => Signup());
+                            onPressed: () async {
+                              //Get.to(() => Signup());
+
+                              //add login logic
+                              if (_formKey.currentState!.saveAndValidate()) {
+                                var password =
+                                    _formKey.currentState!.value['password'];
+                                var emailAddress =
+                                    _formKey.currentState!.value['email'];
+
+                                var user = ParseUser(
+                                  emailAddress,
+                                  password,
+                                  emailAddress,
+                                );
+                                var response = await user.login();
+
+                                if (response.success) {
+                                  Get.to(() => Dashboard());
+                                  Get.snackbar(
+                                    "Success",
+                                    "Logged in successfully",
+                                    snackPosition: SnackPosition.BOTTOM,
+                                  );
+                                } else {
+                                  Get.snackbar(
+                                    "Error",
+                                    response.error!.message,
+                                    snackPosition: SnackPosition.BOTTOM,
+                                  );
+                                }
+                              }
                             },
                             child: Text(
                               "Create Account",

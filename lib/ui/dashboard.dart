@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myapp/ui/add_edititems.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 class Dashboard extends StatelessWidget {
   const Dashboard({super.key});
@@ -8,29 +9,55 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
- body: ListView(children: const [
-        Padding(
- padding: EdgeInsets.all(16.0),
- child: Text(
-            "Items",
- style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
- ),
- ),
-        Card(
- margin: EdgeInsets.all(16.0),
- child: ListTile(
- leading: Image(
- image: AssetImage('img/mental1.jpg'), // Replace with your dummy image path
- width: 100,
- height: 100,
- fit: BoxFit.cover,
- ),
- title: Text('Dummy Item Title'),
- subtitle: Text('Dummy item description goes here.'),
- ),
- ),
-        
-      ]),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              "Items",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder(
+              future: QueryBuilder<ParseObject>(ParseObject("Quotes")).find(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      var item = snapshot.data![index];
+                      var title = item.get<String>("title");
+                      var description = item.get<String>("description");
+                      var img = item.get<ParseFile>("img");
+
+                      return Card(
+                        margin: EdgeInsets.all(16.0),
+                        child: ListTile(
+                          leading: Image(
+                            image: (img != null && img.url != null)
+                                ? NetworkImage(img.url!)
+                                : AssetImage(
+                                    'img/mental1.jpg',
+                                  ), // Replace with your dummy image path
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.cover,
+                          ),
+                          title: Text(title!),
+                          subtitle: Text(description!),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Get.to(() => AddEditItems());

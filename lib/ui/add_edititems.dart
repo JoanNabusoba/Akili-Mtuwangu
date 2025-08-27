@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:get/get.dart';
 import 'package:myapp/ui/widgets/akili_btn.dart';
 import 'package:file_picker/file_picker.dart';
-
+import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 class AddEditItems extends StatelessWidget {
   const AddEditItems({super.key});
@@ -36,15 +37,25 @@ class AddEditItems extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(field.value != null ? field.value.names.join(', ') : 'No file selected'),
+                        Text(
+                          field.value != null
+                              ? field.value.names.join(', ')
+                              : 'No file selected',
+                        ),
                         ElevatedButton(
                           onPressed: () async {
-                            final result = await FilePicker.platform.pickFiles(type: FileType.image, allowedExtensions: ['jpg', 'jpeg', 'png'], allowMultiple: false);
+                            final result = await FilePicker.platform.pickFiles(
+                              type: FileType.image,
+                              allowedExtensions: ['jpg', 'jpeg', 'png'],
+                              allowMultiple: false,
+                            );
                             field.didChange(result);
                           },
-                          child: Text('Select Image')),
+                          child: Text('Select Image'),
+                        ),
                       ],
-                    ));
+                    ),
+                  );
                 },
               ),
               SizedBox(height: 16.0),
@@ -71,9 +82,23 @@ class AddEditItems extends StatelessWidget {
               SizedBox(height: 24.0),
               AkiliButton(
                 text: 'Save',
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState?.saveAndValidate() ?? false) {
                     // Do something with the form data
+                    var image =
+                        _formKey.currentState?.value['image']
+                            as FilePickerResult?;
+                    var title = _formKey.currentState?.value['title'];
+                    var description =
+                        _formKey.currentState?.value['description'];
+                    var quotes = ParseObject('Quotes');
+                    quotes.set('image', image);
+                    quotes.set('title', title);
+                    quotes.set('description', description);
+                    await quotes.save();
+
+                    Get.snackbar('Success', 'Quote saved successfully');
+                    Get.close(1);
                   }
                 },
               ),
