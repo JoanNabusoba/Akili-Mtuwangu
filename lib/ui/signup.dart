@@ -49,6 +49,7 @@ class _SignupState extends State<Signup> {
                 ),
                 const SizedBox(height: 30),
                 AkiliTextfield(
+                  textEditingController: emailController,
                   keyboardType: TextInputType.emailAddress,
                   labelText: "Email",
                   name: 'email',
@@ -57,6 +58,7 @@ class _SignupState extends State<Signup> {
                 ),
                 const SizedBox(height: 20),
                 AkiliTextfield(
+                  textEditingController: passwordController,
                   keyboardType: TextInputType.text,
                   labelText: "Password",
                   name: 'password',
@@ -71,6 +73,7 @@ class _SignupState extends State<Signup> {
                 ),
                 const SizedBox(height: 20),
                 AkiliTextfield(
+                  textEditingController: confirmPasswordController,
                   keyboardType: TextInputType.text,
                   labelText: "Confirm Password",
                   name: 'confirmpassword',
@@ -116,16 +119,15 @@ class _SignupState extends State<Signup> {
                       } else {
                         // Proceed with signup
 
-                        var password = _formKey.currentState!.value['password'];
-                        var emailAddress =
-                            _formKey.currentState!.value['email'];
+                        var password = passwordController.text;
+                        var emailAddress = emailController.text;
 
                         var user = ParseUser(
                           emailAddress,
                           password,
                           emailAddress,
                         );
-                        var response = await user.create();
+                        var response = await user.signUp();
 
                         if (response.success) {
                           Get.offAll(() => Login());

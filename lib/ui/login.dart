@@ -98,8 +98,36 @@ class _LoginState extends State<Login> {
                         //Akili button
                         AkiliButton(
                           text: "Login",
-                          onPressed: () {
-                            Get.to(() => Dashboard());
+                          onPressed: () async {
+                            //add login logic
+                            if (_formKey.currentState!.saveAndValidate()) {
+                              var password =
+                                  _formKey.currentState!.value['password'];
+                              var emailAddress =
+                                  _formKey.currentState!.value['email'];
+
+                              var user = ParseUser(
+                                emailAddress,
+                                password,
+                                emailAddress,
+                              );
+                              var response = await user.login();
+
+                              if (response.success) {
+                                Get.to(() => Dashboard());
+                                Get.snackbar(
+                                  "Success",
+                                  "Logged in successfully",
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                              } else {
+                                Get.snackbar(
+                                  "Error",
+                                  response.error!.message,
+                                  snackPosition: SnackPosition.BOTTOM,
+                                );
+                              }
+                            }
                           },
                         ),
                         const SizedBox(height: 10),
@@ -116,37 +144,7 @@ class _LoginState extends State<Login> {
                           ),
                           child: TextButton(
                             onPressed: () async {
-                              //Get.to(() => Signup());
-
-                              //add login logic
-                              if (_formKey.currentState!.saveAndValidate()) {
-                                var password =
-                                    _formKey.currentState!.value['password'];
-                                var emailAddress =
-                                    _formKey.currentState!.value['email'];
-
-                                var user = ParseUser(
-                                  emailAddress,
-                                  password,
-                                  emailAddress,
-                                );
-                                var response = await user.login();
-
-                                if (response.success) {
-                                  Get.to(() => Dashboard());
-                                  Get.snackbar(
-                                    "Success",
-                                    "Logged in successfully",
-                                    snackPosition: SnackPosition.BOTTOM,
-                                  );
-                                } else {
-                                  Get.snackbar(
-                                    "Error",
-                                    response.error!.message,
-                                    snackPosition: SnackPosition.BOTTOM,
-                                  );
-                                }
-                              }
+                              Get.to(() => Signup());
                             },
                             child: Text(
                               "Create Account",

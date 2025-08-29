@@ -9,19 +9,22 @@ class AkiliTextfield extends StatelessWidget {
     required this.prefixIcon,
     required this.labelText,
     required this.keyboardType,
-    this.obscureText,
+    this.obscureText = false,
+    this.textEditingController,
   });
   final String name;
   final String hintText;
   final IconData prefixIcon;
   final String labelText;
   final TextInputType keyboardType;
-  final bool? obscureText;
+  final bool obscureText;
+  final TextEditingController? textEditingController;
 
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
       name: name,
+      controller: textEditingController,
       decoration: InputDecoration(
         hintText: hintText,
         prefixIcon: Icon(prefixIcon, color: Colors.grey[400]),
@@ -34,6 +37,7 @@ class AkiliTextfield extends StatelessWidget {
         fillColor: Colors.white,
         filled: true,
       ),
+      obscureText: obscureText,
       keyboardType: keyboardType,
     );
   }

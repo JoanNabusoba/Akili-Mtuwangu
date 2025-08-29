@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myapp/ui/dashboard.dart';
 import 'package:myapp/ui/login.dart';
 import 'package:myapp/ui/widgets/akili_btn.dart';
+import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 class Onboarding extends StatelessWidget {
   const Onboarding({super.key});
@@ -50,8 +52,12 @@ class Onboarding extends StatelessWidget {
             //Button section
             AkiliButton(
               text: "Get Started",
-              onPressed: () {
-                Get.to(() => Login());
+              onPressed: () async {
+                if ((await ParseUser.currentUser()) == null) {
+                  Get.to(() => Login());
+                } else {
+                  Get.to(() => Dashboard());
+                }
               },
             ),
           ],

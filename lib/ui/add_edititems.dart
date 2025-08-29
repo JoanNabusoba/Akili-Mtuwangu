@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
@@ -46,7 +49,7 @@ class AddEditItems extends StatelessWidget {
                           onPressed: () async {
                             final result = await FilePicker.platform.pickFiles(
                               type: FileType.image,
-                              allowedExtensions: ['jpg', 'jpeg', 'png'],
+                              // allowedExtensions: ['jpg', 'jpeg', 'png'],
                               allowMultiple: false,
                             );
                             field.didChange(result);
@@ -92,7 +95,19 @@ class AddEditItems extends StatelessWidget {
                     var description =
                         _formKey.currentState?.value['description'];
                     var quotes = ParseObject('Quotes');
-                    quotes.set('image', image);
+
+                    var imagePath = image!.files.first.path;
+                    if (imagePath != null && imagePath.isNotEmpty) {
+                      ParseFileBase fileImg = ParseFile(File(imagePath));
+                      if (kIsWeb) {
+                        fileImg = ParseWebFile(
+                          image.files.first.bytes,
+                          name: "${image.files.first.xFile.name}",
+                        );
+                      }
+                      quotes.set('image', fileImg);
+                    }
+
                     quotes.set('title', title);
                     quotes.set('description', description);
                     await quotes.save();
