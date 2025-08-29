@@ -4,8 +4,8 @@ import 'package:myapp/ui/onboarding.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 
 Future<void> main() async {
-  const keyApplicationId = '1bASs7gmD9PIgpm1UvvIkwGyYqw1BPad1ieD8004';
-  const keyClientKey = 'IEeV5iUvVVUPWFbyMawvLUA3v85hCWGzT1Rr49ie';
+  const keyApplicationId = '';
+  const keyClientKey = '';
   const keyParseServerUrl = 'https://parseapi.back4app.com';
 
   await Parse().initialize(
